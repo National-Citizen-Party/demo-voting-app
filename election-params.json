@@ -1,0 +1,41 @@
+{
+  "posts": [
+    {
+      "id": "convenor",
+      "name": "Convenor",
+      "candidates": [
+        { "id": "c1", "name": "Alice Johnson" },
+        { "id": "c2", "name": "Bob Smith" },
+        { "id": "c3", "name": "Carol Williams" },
+        { "id": "c4", "name": "David Brown" }
+      ]
+    },
+    {
+      "id": "secretary",
+      "name": "Secretary",
+      "candidates": [
+        { "id": "s1", "name": "Emma Davis" },
+        { "id": "s2", "name": "Frank Miller" },
+        { "id": "s3", "name": "Grace Wilson" },
+        { "id": "s4", "name": "Henry Moore" }
+      ]
+    },
+    {
+      "id": "organizer",
+      "name": "Organizer",
+      "candidates": [
+        { "id": "o1", "name": "Iris Taylor" },
+        { "id": "o2", "name": "Jack Anderson" },
+        { "id": "o3", "name": "Kate Thomas" },
+        { "id": "o4", "name": "Leo Jackson" }
+      ]
+    }
+  ],
+  "validBallotCodes": [
+    "BALLOT-001", "BALLOT-002", "BALLOT-003", "BALLOT-004", "BALLOT-005",
+    "BALLOT-006", "BALLOT-007", "BALLOT-008", "BALLOT-009", "BALLOT-010",
+    "BALLOT-011", "BALLOT-012", "BALLOT-013", "BALLOT-014", "BALLOT-015",
+    "BALLOT-016", "BALLOT-017", "BALLOT-018", "BALLOT-019", "BALLOT-020"
+  ],
+  "defaultObserverPublicKey": "A2Jq8bAAcbV+hCuhgmrIpxCrjLrlKyDJ30Kmpo4628I="
+}

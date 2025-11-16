@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cast Your Vote</title>
+    <script src="/bip39.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .button.secondary {
+            background: #6c757d;
+            margin-right: 10px;
+        }
+        .post-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .json-box {
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .json-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .json-content {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #155724;
+        }
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #721c24;
+        }
+        .warning-message {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        .info-message {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #0c5460;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .instruction-box {
+            background: #e7f3ff;
+            border: 2px solid #2196F3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .instruction-box strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #0d47a1;
+        }
+        .instruction-box ul {
+            margin-left: 20px;
+            color: #1565c0;
+        }
+        .instruction-box li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✍️ Cast Your Vote</h1>
+        <p class="subtitle">Secure and Anonymous Voting</p>
+        
+        <!-- Step 1: Ballot Code Entry -->
+        <div id="step1" class="step active">
+            <div class="form-group">
+                <label for="ballotCode">Enter Your Ballot Code:</label>
+                <input type="text" id="ballotCode" placeholder="e.g., BALLOT-001">
+            </div>
+            <div id="ballotError" class="error-message" style="display:none;"></div>
+            <div id="alreadyUsedSection" style="display:none;">
+                <div class="json-box">
+                    <div class="json-label">
+                        <span>🔐 Your Previously Submitted Encrypted Vote</span>
+                        <button class="copy-btn" onclick="copyToClipboard('existingEncryptedVote')">Copy</button>
+                    </div>
+                    <div class="json-content" id="existingEncryptedVote"></div>
+                </div>
+            </div>
+            <button class="button" onclick="verifyBallot()">Continue</button>
+        </div>
+        
+        <!-- Step 2: Vote Selection -->
+        <div id="step2" class="step">
+            <div id="votingForm"></div>
+            <button class="button secondary" onclick="goToStep(1)">Back</button>
+            <button class="button" onclick="generateVoteJson()">Generate Vote</button>
+        </div>
+        
+        <!-- Step 3: Encryption -->
+        <div id="step3" class="step">
+            <div class="instruction-box">
+                <strong>📝 IMPORTANT: Save Your Votes!</strong>
+                <ul>
+                    <li>Copy and save both your <strong>plain text vote</strong> and <strong>encrypted vote</strong></li>
+                    <li>Store them in a safe place (text file, notes app, etc.)</li>
+                    <li>You can use these to verify your vote was recorded correctly</li>
+                </ul>
+            </div>
+
+            <div class="json-box">
+                <div class="json-label">
+                    <span>📄 Your Vote (Plain Text - SAVE THIS!)</span>
+                    <button class="copy-btn" onclick="copyToClipboard('plainVote')">Copy</button>
+                </div>
+                <div class="json-content" id="plainVote"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="publicKey">Observer Public Key:</label>
+                <textarea id="publicKey" rows="3" placeholder="Paste the public key provided by election observers"></textarea>
+                <small id="publicKeyNote" style="display:none; color: #28a745; margin-top: 5px; display: block;">✓ Using default observer public key</small>
+            </div>
+            
+            <button class="button" onclick="encryptVote()">Encrypt Vote</button>
+            
+            <div id="encryptedSection" style="display:none;">
+                <div class="json-box">
+                    <div class="json-label">
+                        <span>🔐 Encrypted Vote (SAVE THIS TOO!)</span>
+                        <button class="copy-btn" onclick="copyToClipboard('encryptedVote')">Copy</button>
+                    </div>
+                    <div class="json-content" id="encryptedVote"></div>
+                </div>
+                
+                <div class="warning-message">
+                    <strong>⚠️ Your vote is NOT finalized yet!</strong>
+                    <p>You must click "Submit Vote" below and verify it appears on the public dashboard for your vote to count.</p>
+                </div>
+                
+                <button class="button secondary" onclick="goToStep(2)">Back</button>
+                <button class="button" onclick="submitVote()">Submit Vote</button>
+            </div>
+        </div>
+        
+        <!-- Step 4: Success -->
+        <div id="step4" class="step">
+            <div class="success-message">
+                <h2>✅ Vote Submitted Successfully!</h2>
+                <p>Your encrypted vote has been recorded. Thank you for participating!</p>
+                <p><strong>Vote ID:</strong> <span id="voteId"></span></p>
+            </div>
+            <div class="info-message">
+                <strong>✓ Next Step: Verify Your Vote</strong>
+                <p>Visit the public dashboard to confirm your encrypted vote appears correctly.</p>
+            </div>
+            <a href="/dashboard" class="button">View Public Dashboard</a>
+        </div>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        let ballotCode = '';
+        let voteData = {};
+        let encryptedVoteData = '';
+        let electionParams = null;
+        
+        // Load election parameters
+        async function loadElectionParams() {
+            try {
+                const response = await fetch('/api/election-params');
+                electionParams = await response.json();
+                
+                // Pre-fill public key if default is set and make it read-only
+                if (electionParams.defaultObserverPublicKey) {
+                    const publicKeyField = document.getElementById('publicKey');
+                    const publicKeyNote = document.getElementById('publicKeyNote');
+                    
+                    publicKeyField.value = electionParams.defaultObserverPublicKey;
+                    publicKeyField.readOnly = true;
+                    publicKeyField.style.backgroundColor = '#f0f0f0';
+                    publicKeyField.style.cursor = 'not-allowed';
+                    publicKeyNote.style.display = 'block';
+                }
+            } catch (error) {
+                alert('Error loading election parameters: ' + error.message);
+            }
+        }
+        
+        // Initialize
+        loadElectionParams();
+        
+        function goToStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+        }
+        
+        async function verifyBallot() {
+            const code = document.getElementById('ballotCode').value.trim();
+            const errorDiv = document.getElementById('ballotError');
+            const alreadyUsedSection = document.getElementById('alreadyUsedSection');
+            
+            if (!code) {
+                errorDiv.textContent = 'Please enter a ballot code';
+                errorDiv.style.display = 'block';
+                alreadyUsedSection.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/verify-ballot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ballotCode: code })
+                });
+                
+                const result = await response.json();
+                
+                if (result.valid) {
+                    ballotCode = code;
+                    errorDiv.style.display = 'none';
+                    alreadyUsedSection.style.display = 'none';
+                    createVotingForm();
+                    goToStep(2);
+                } else {
+                    errorDiv.textContent = result.message;
+                    errorDiv.style.display = 'block';
+                    
+                    // Show encrypted vote if ballot was already used
+                    if (result.alreadyUsed && result.encryptedVote) {
+                        document.getElementById('existingEncryptedVote').textContent = result.encryptedVote;
+                        alreadyUsedSection.style.display = 'block';
+                    } else {
+                        alreadyUsedSection.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Error verifying ballot: ' + error.message;
+                errorDiv.style.display = 'block';
+                alreadyUsedSection.style.display = 'none';
+            }
+        }
+        
+        function createVotingForm() {
+            const form = document.getElementById('votingForm');
+            form.innerHTML = '';
+            
+            electionParams.posts.forEach(post => {
+                const section = document.createElement('div');
+                section.className = 'post-section';
+                
+                const title = document.createElement('div');
+                title.className = 'post-title';
+                title.textContent = post.name;
+                section.appendChild(title);
+                
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+                
+                const label = document.createElement('label');
+                label.textContent = 'Select a candidate:';
+                formGroup.appendChild(label);
+                
+                const select = document.createElement('select');
+                select.id = 'vote_' + post.id;
+                select.required = true;
+                
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select a candidate --';
+                select.appendChild(defaultOption);
+                
+                post.candidates.forEach(candidate => {
+                    const option = document.createElement('option');
+                    option.value = candidate.id;
+                    option.textContent = candidate.name;
+                    select.appendChild(option);
+                });
+                
+                formGroup.appendChild(select);
+                section.appendChild(formGroup);
+                form.appendChild(section);
+            });
+        }
+        
+        function generateVoteJson() {
+            voteData = {
+                ballotCode: ballotCode,
+                timestamp: new Date().toISOString(),
+                votes: {}
+            };
+            
+            let allSelected = true;
+            electionParams.posts.forEach(post => {
+                const select = document.getElementById('vote_' + post.id);
+                if (!select.value) {
+                    allSelected = false;
+                } else {
+                    const candidateId = select.value;
+                    const candidate = post.candidates.find(c => c.id === candidateId);
+                    
+                    // Store both ID and name for clarity
+                    voteData.votes[post.id] = {
+                        candidateId: candidateId,
+                        candidateName: candidate.name,
+                        postName: post.name
+                    };
+                }
+            });
+            
+            if (!allSelected) {
+                alert('Please select a candidate for all posts');
+                return;
+            }
+            
+            document.getElementById('plainVote').textContent = JSON.stringify(voteData, null, 2);
+            goToStep(3);
+        }
+        
+        async function encryptVote() {
+            const publicKeyBase64 = document.getElementById('publicKey').value.trim();
+            
+            if (!publicKeyBase64) {
+                alert('Please paste the public key');
+                return;
+            }
+            
+            try {
+                // Convert base64 to ArrayBuffer
+                const binaryString = atob(publicKeyBase64);
+                const keyBytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    keyBytes[i] = binaryString.charCodeAt(i);
+                }
+                
+                // Import the AES key
+                const key = await window.crypto.subtle.importKey(
+                    "raw",
+                    keyBytes.buffer,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["encrypt"]
+                );
+                
+                // Generate random IV
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                
+                // Encrypt the vote data
+                const encoder = new TextEncoder();
+                const data = encoder.encode(JSON.stringify(voteData));
+                const encrypted = await window.crypto.subtle.encrypt(
+                    {
+                        name: "AES-GCM",
+                        iv: iv
+                    },
+                    key,
+                    data
+                );
+                
+                // Combine IV and encrypted data
+                const combined = new Uint8Array(iv.length + encrypted.byteLength);
+                combined.set(iv, 0);
+                combined.set(new Uint8Array(encrypted), iv.length);
+                
+                // Convert to base64
+                encryptedVoteData = arrayBufferToBase64(combined.buffer);
+                document.getElementById('encryptedVote').textContent = encryptedVoteData;
+                document.getElementById('encryptedSection').style.display = 'block';
+                
+            } catch (error) {
+                alert('Error encrypting vote: ' + error.message + '\nPlease make sure you pasted the correct public key.');
+            }
+        }
+        
+        async function submitVote() {
+            try {
+                const response = await fetch('/api/submit-vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ballotCode: ballotCode,
+                        encryptedVote: encryptedVoteData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('voteId').textContent = result.voteId;
+                    goToStep(4);
+                } else {
+                    alert('Error submitting vote: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error submitting vote: ' + error.message);
+            }
+        }
+        
+        function arrayBufferToBase64(buffer) {
+            const binary = String.fromCharCode.apply(null, new Uint8Array(buffer));
+            return btoa(binary);
+        }
+        
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>

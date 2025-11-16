@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observer Dashboard - Decrypt Votes</title>
+    <script src="/bip39.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-right: 10px;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .vote-card {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .vote-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .vote-id {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+        .decrypted-content {
+            background: #e7f3ff;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .vote-detail {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .vote-detail strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .candidate-name {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .results-summary {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .results-summary h2 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        .result-post {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .result-post h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .candidate-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .candidate-result.winner {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            font-weight: bold;
+        }
+        .vote-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        #decryptedSection {
+            display: none;
+        }
+        #decryptedSection.visible {
+            display: block;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👁️ Observer Dashboard</h1>
+        <p class="subtitle">Decrypt and View Vote Results</p>
+        
+        <div class="warning">
+            <strong>⚠️ For Election Observers Only</strong>
+            <p>This page allows you to decrypt votes using the private key. All decryption happens locally in your browser - no data is sent to the server.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="privateKey">Enter Private Key (12-word mnemonic):</label>
+            <textarea id="privateKey" rows="3" placeholder="Paste the 12-word mnemonic generated during key generation"></textarea>
+        </div>
+        
+        <button class="button" onclick="decryptAllVotes()">🔓 Decrypt All Votes</button>
+        <button class="button" onclick="loadEncryptedVotes()" style="background: #6c757d;">🔄 Refresh Votes</button>
+        
+        <div id="decryptedSection">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalVotes">0</div>
+                    <div class="stat-label">Total Votes Decrypted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBallots">20</div>
+                    <div class="stat-label">Total Ballots Issued</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="turnoutPercent">0%</div>
+                    <div class="stat-label">Voter Turnout</div>
+                </div>
+            </div>
+            
+            <div id="resultsSummary" class="results-summary"></div>
+            
+            <h2 style="margin-bottom: 20px; color: #333;">Individual Votes</h2>
+            <div id="votesContainer"></div>
+            
+            <button class="copy-btn" onclick="exportResults()" style="padding: 12px 25px; font-size: 16px; margin-top: 20px;">📥 Export Results as JSON</button>
+        </div>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+    
+    <script>
+        let encryptedVotes = [];
+        let decryptedVotes = [];
+        let electionParams = null;
+        
+        // Load election parameters
+        async function loadElectionParams() {
+            try {
+                const response = await fetch('/api/election-params');
+                electionParams = await response.json();
+            } catch (error) {
+                alert('Error loading election parameters: ' + error.message);
+            }
+        }
+        
+        async function loadEncryptedVotes() {
+            try {
+                const response = await fetch('/api/votes');
+                const data = await response.json();
+                encryptedVotes = data.votes;
+                
+                if (encryptedVotes.length === 0) {
+                    alert('No votes have been submitted yet.');
+                }
+            } catch (error) {
+                alert('Error loading votes: ' + error.message);
+            }
+        }
+        
+        async function decryptAllVotes() {
+            const mnemonic = document.getElementById('privateKey').value.trim();
+            
+            if (!mnemonic) {
+                alert('Please enter the 12-word mnemonic');
+                return;
+            }
+            
+            // Validate mnemonic
+            if (!bip39.validateMnemonic(mnemonic)) {
+                alert('Invalid mnemonic. Please check your 12-word private key.');
+                return;
+            }
+            
+            if (encryptedVotes.length === 0) {
+                await loadEncryptedVotes();
+                if (encryptedVotes.length === 0) {
+                    return;
+                }
+            }
+            
+            try {
+                // Derive key from mnemonic using PBKDF2
+                const encoder = new TextEncoder();
+                const mnemonicBytes = encoder.encode(mnemonic);
+                
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    "raw",
+                    mnemonicBytes,
+                    "PBKDF2",
+                    false,
+                    ["deriveBits", "deriveKey"]
+                );
+                
+                // Derive AES-GCM key (256-bit)
+                const key = await window.crypto.subtle.deriveKey(
+                    {
+                        name: "PBKDF2",
+                        salt: encoder.encode("election-observer-key"),
+                        iterations: 100000,
+                        hash: "SHA-256"
+                    },
+                    keyMaterial,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["decrypt"]
+                );
+                
+                // Decrypt all votes
+                decryptedVotes = [];
+                for (const vote of encryptedVotes) {
+                    try {
+                        const encryptedData = base64ToArrayBuffer(vote.encryptedVote);
+                        const encryptedArray = new Uint8Array(encryptedData);
+                        
+                        // Extract IV (first 12 bytes) and ciphertext
+                        const iv = encryptedArray.slice(0, 12);
+                        const ciphertext = encryptedArray.slice(12);
+                        
+                        const decrypted = await window.crypto.subtle.decrypt(
+                            {
+                                name: "AES-GCM",
+                                iv: iv
+                            },
+                            key,
+                            ciphertext
+                        );
+                        
+                        const decoder = new TextDecoder();
+                        const decryptedText = decoder.decode(decrypted);
+                        const voteData = JSON.parse(decryptedText);
+                        
+                        decryptedVotes.push({
+                            id: vote.id,
+                            timestamp: vote.timestamp,
+                            ...voteData
+                        });
+                    } catch (err) {
+                        console.error('Error decrypting vote ' + vote.id, err);
+                    }
+                }
+                
+                if (decryptedVotes.length === 0) {
+                    alert('Failed to decrypt any votes. Please check the mnemonic.');
+                    return;
+                }
+                
+                displayResults();
+                
+            } catch (error) {
+                alert('Error decrypting votes: ' + error.message + '\nPlease make sure you entered the correct 12-word mnemonic.');
+            }
+        }
+        
+        function displayResults() {
+            // Update stats
+            document.getElementById('totalVotes').textContent = decryptedVotes.length;
+            const turnout = Math.round((decryptedVotes.length / 20) * 100);
+            document.getElementById('turnoutPercent').textContent = turnout + '%';
+            
+            // Calculate results
+            const results = {};
+            electionParams.posts.forEach(post => {
+                results[post.id] = {};
+                post.candidates.forEach(candidate => {
+                    results[post.id][candidate.id] = {
+                        name: candidate.name,
+                        count: 0
+                    };
+                });
+            });
+            
+            // Count votes
+            decryptedVotes.forEach(vote => {
+                Object.keys(vote.votes).forEach(postId => {
+                    const voteEntry = vote.votes[postId];
+                    // Handle both old format (string) and new format (object)
+                    const candidateId = typeof voteEntry === 'string' ? voteEntry : voteEntry.candidateId;
+                    if (results[postId] && results[postId][candidateId]) {
+                        results[postId][candidateId].count++;
+                    }
+                });
+            });
+            
+            // Display summary
+            const summaryContainer = document.getElementById('resultsSummary');
+            let summaryHTML = '<h2>🏆 Election Results Summary</h2>';
+            
+            electionParams.posts.forEach(post => {
+                const postResults = results[post.id];
+                const sortedCandidates = Object.entries(postResults)
+                    .sort((a, b) => b[1].count - a[1].count);
+                
+                summaryHTML += `<div class="result-post">
+                    <h3>${post.name}</h3>`;
+                
+                sortedCandidates.forEach(([candidateId, data], index) => {
+                    const isWinner = index === 0 && data.count > 0;
+                    summaryHTML += `
+                        <div class="candidate-result ${isWinner ? 'winner' : ''}">
+                            <span>${isWinner ? '👑 ' : ''}${data.name}</span>
+                            <span class="vote-count">${data.count} vote${data.count !== 1 ? 's' : ''}</span>
+                        </div>`;
+                });
+                
+                summaryHTML += '</div>';
+            });
+            
+            summaryContainer.innerHTML = summaryHTML;
+            
+            // Display individual votes
+            const container = document.getElementById('votesContainer');
+            container.innerHTML = '';
+            
+            decryptedVotes.forEach(vote => {
+                const card = document.createElement('div');
+                card.className = 'vote-card';
+                
+                const timestamp = new Date(vote.timestamp).toLocaleString();
+                
+                let votesHTML = '';
+                electionParams.posts.forEach(post => {
+                    const voteEntry = vote.votes[post.id];
+                    // Handle both old format (string) and new format (object)
+                    let candidateName;
+                    if (typeof voteEntry === 'string') {
+                        const candidate = post.candidates.find(c => c.id === voteEntry);
+                        candidateName = candidate ? candidate.name : 'Unknown';
+                    } else {
+                        candidateName = voteEntry.candidateName;
+                    }
+                    
+                    votesHTML += `
+                        <div class="vote-detail">
+                            <strong>${post.name}:</strong>
+                            <span class="candidate-name">${candidateName}</span>
+                        </div>`;
+                });
+                
+                card.innerHTML = `
+                    <div class="vote-header">
+                        <div class="vote-id">Vote #${vote.id}</div>
+                        <div style="color: #666; font-size: 14px;">📅 ${timestamp}</div>
+                    </div>
+                    <div class="decrypted-content">
+                        <strong style="display: block; margin-bottom: 10px; color: #333;">Ballot Code: ${vote.ballotCode}</strong>
+                        ${votesHTML}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            document.getElementById('decryptedSection').classList.add('visible');
+        }
+        
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+        
+        function exportResults() {
+            const results = {
+                exportTime: new Date().toISOString(),
+                totalVotes: decryptedVotes.length,
+                votes: decryptedVotes
+            };
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'election-results-' + Date.now() + '.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+        
+        // Initialize
+        loadElectionParams();
+        loadEncryptedVotes();
+    </script>
+</body>
+</html>
+

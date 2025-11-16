@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Dashboard - Encrypted Votes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .vote-card {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .vote-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .vote-id {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+        .vote-time {
+            color: #666;
+            font-size: 14px;
+        }
+        .encrypted-data {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            max-height: 150px;
+            overflow-y: auto;
+            color: #333;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .no-votes {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .badge {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Public Dashboard</h1>
+        <p class="subtitle">All Encrypted Votes (Transparent & Verifiable)</p>
+        
+        <button class="refresh-btn" onclick="loadVotes()">🔄 Refresh</button>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalVotes">0</div>
+                <div class="stat-label">Total Votes Submitted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalBallots">20</div>
+                <div class="stat-label">Total Ballots Issued</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="turnoutPercent">0%</div>
+                <div class="stat-label">Voter Turnout</div>
+            </div>
+        </div>
+        
+        <div id="votesContainer"></div>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+    
+    <script>
+        async function loadVotes() {
+            try {
+                const response = await fetch('/api/votes');
+                const data = await response.json();
+                
+                // Update stats
+                document.getElementById('totalVotes').textContent = data.totalVotes;
+                const turnout = Math.round((data.totalVotes / 20) * 100);
+                document.getElementById('turnoutPercent').textContent = turnout + '%';
+                
+                // Display votes
+                const container = document.getElementById('votesContainer');
+                
+                if (data.votes.length === 0) {
+                    container.innerHTML = '<div class="no-votes">No votes submitted yet.</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                data.votes.forEach(vote => {
+                    const card = document.createElement('div');
+                    card.className = 'vote-card';
+                    
+                    const timestamp = new Date(vote.timestamp).toLocaleString();
+                    
+                    card.innerHTML = `
+                        <div class="vote-header">
+                            <div>
+                                <span class="vote-id">Vote #${vote.id}</span>
+                                <span class="badge">ENCRYPTED</span>
+                            </div>
+                            <div class="vote-time">📅 ${timestamp}</div>
+                        </div>
+                        <div class="encrypted-data" id="vote-${vote.id}">${vote.encryptedVote}</div>
+                        <button class="copy-btn" onclick="copyVote(${vote.id})">Copy Encrypted Vote</button>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+                
+            } catch (error) {
+                alert('Error loading votes: ' + error.message);
+            }
+        }
+        
+        function copyVote(voteId) {
+            const text = document.getElementById('vote-' + voteId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Encrypted vote copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+        
+        // Load votes on page load
+        loadVotes();
+        
+        // Auto-refresh every 10 seconds
+        setInterval(loadVotes, 10000);
+    </script>
+</body>
+</html>
+
