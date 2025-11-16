@@ -353,17 +353,17 @@
                 <div class="key-box">
                     <div class="key-label">
                         <span>🔓 PUBLIC KEY (Share with voters)</span>
-                        <button class="copy-btn" onclick="copyToClipboard('publicKey')">Copy</button>
+                        <button class="copy-btn" onclick="copyToClipboard('generatedPublicKey')">Copy</button>
                     </div>
-                    <div class="key-content" id="publicKey"></div>
+                    <div class="key-content" id="generatedPublicKey"></div>
                 </div>
                 
                 <div class="key-box">
                     <div class="key-label">
                         <span>🔐 PRIVATE KEY - 12 Word Mnemonic (Keep Secret!)</span>
-                        <button class="copy-btn" onclick="copyToClipboard('privateKey')">Copy</button>
+                        <button class="copy-btn" onclick="copyToClipboard('generatedPrivateKey')">Copy</button>
                     </div>
-                    <div class="key-content" id="privateKey" style="font-size: 14px; line-height: 1.8;"></div>
+                    <div class="key-content" id="generatedPrivateKey" style="font-size: 14px; line-height: 1.8;"></div>
                 </div>
             </div>
         </div>
@@ -378,12 +378,12 @@
         </div>
         
         <div class="form-group">
-            <label for="privateKey">Enter Private Key (12-word mnemonic):</label>
-            <textarea id="privateKey" rows="3" placeholder="Paste the 12-word mnemonic generated during key generation"></textarea>
+            <label for="decryptPrivateKey">Enter Private Key (12-word mnemonic):</label>
+            <textarea id="decryptPrivateKey" rows="3" placeholder="Paste the 12-word mnemonic generated during key generation"></textarea>
         </div>
         
         <button class="button" onclick="decryptAllVotes()">🔓 Decrypt All Votes</button>
-        <button class="button" onclick="loadEncryptedVotes()" style="background: #6c757d;">🔄 Refresh Votes</button>
+        <button class="button" onclick="loadEncryptedVotes()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);">🔄 Refresh Votes</button>
         
         <div id="decryptedSection">
             <div class="stats">
@@ -442,7 +442,7 @@
         }
         
         async function decryptAllVotes() {
-            const mnemonic = document.getElementById('privateKey').value.trim();
+            const mnemonic = document.getElementById('decryptPrivateKey').value.trim();
             
             if (!mnemonic) {
                 alert('Please enter the 12-word mnemonic');
@@ -714,8 +714,8 @@
                 publicKeyString = arrayBufferToBase64(exportedKey);
                 
                 // Display keys
-                document.getElementById('publicKey').textContent = publicKeyString;
-                document.getElementById('privateKey').textContent = generatedMnemonic;
+                document.getElementById('generatedPublicKey').textContent = publicKeyString;
+                document.getElementById('generatedPrivateKey').textContent = generatedMnemonic;
                 document.getElementById('keySection').classList.add('visible');
                 
             } catch (error) {
