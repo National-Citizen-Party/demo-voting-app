@@ -12,26 +12,35 @@
             box-sizing: border-box;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
         }
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                        0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         h1 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         .subtitle {
-            color: #666;
-            margin-bottom: 30px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            font-size: 16px;
         }
         .step {
             display: none;
@@ -44,152 +53,189 @@
         }
         label {
             display: block;
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: #374151;
             margin-bottom: 8px;
+            font-size: 14px;
         }
         input, select, textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
             font-size: 16px;
             font-family: inherit;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease;
         }
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         .button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
+            padding: 16px 32px;
+            border-radius: 12px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         .button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+        .button:active {
+            transform: translateY(0);
         }
         .button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
         .button.secondary {
-            background: #6c757d;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
             margin-right: 10px;
         }
+        .button.secondary:hover {
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+        }
         .post-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
+            background: rgba(102, 126, 234, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 16px;
             margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
         .post-title {
             font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
         }
         .json-box {
-            background: #f5f5f5;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            background: rgba(249, 250, 251, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
             position: relative;
         }
         .json-label {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 14px;
         }
         .json-content {
-            font-family: 'Courier New', monospace;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             font-size: 12px;
             word-break: break-all;
             background: white;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 16px;
+            border-radius: 12px;
             max-height: 200px;
             overflow-y: auto;
+            border: 1px solid #e5e7eb;
         }
         .copy-btn {
-            background: #4CAF50;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
         }
         .copy-btn:hover {
-            background: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
         .success-message {
-            background: #d4edda;
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: #155724;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: #065f46;
         }
         .error-message {
-            background: #f8d7da;
-            border: 2px solid #dc3545;
-            border-radius: 10px;
-            padding: 15px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            color: #721c24;
+            color: #991b1b;
         }
         .warning-message {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 15px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            color: #856404;
+            color: #92400e;
         }
         .info-message {
-            background: #d1ecf1;
-            border: 2px solid #17a2b8;
-            border-radius: 10px;
-            padding: 15px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            color: #0c5460;
+            color: #1e40af;
         }
         .back-link {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 24px;
             color: #667eea;
             text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
         .back-link:hover {
-            text-decoration: underline;
+            color: #764ba2;
+            transform: translateX(-4px);
         }
         .instruction-box {
-            background: #e7f3ff;
-            border: 2px solid #2196F3;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
         }
         .instruction-box strong {
             display: block;
-            margin-bottom: 10px;
-            color: #0d47a1;
+            margin-bottom: 12px;
+            color: #1e40af;
+            font-weight: 700;
+            font-size: 15px;
         }
         .instruction-box ul {
             margin-left: 20px;
-            color: #1565c0;
+            color: #1e40af;
         }
         .instruction-box li {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            line-height: 1.6;
         }
     </style>
 </head>

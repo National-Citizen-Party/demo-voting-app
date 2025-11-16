@@ -12,73 +12,95 @@
             box-sizing: border-box;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                        0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         h1 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         .subtitle {
-            color: #666;
-            margin-bottom: 30px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            font-size: 16px;
         }
         .warning {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 15px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            color: #856404;
+            color: #92400e;
         }
         .form-group {
             margin-bottom: 25px;
         }
         label {
             display: block;
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: #374151;
             margin-bottom: 8px;
+            font-size: 14px;
         }
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
             font-size: 14px;
-            font-family: 'Courier New', monospace;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease;
         }
         textarea:focus {
             outline: none;
             border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         .button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
+            padding: 16px 32px;
+            border-radius: 12px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-right: 10px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         .button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+        .button:active {
+            transform: translateY(0);
         }
         .button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
         .stats {
             display: grid;
@@ -89,25 +111,35 @@
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 28px;
+            border-radius: 20px;
             text-align: center;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
         .stat-label {
             font-size: 14px;
-            opacity: 0.9;
+            opacity: 0.95;
+            font-weight: 500;
         }
         .vote-card {
-            background: #f8f9fa;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
+            background: rgba(249, 250, 251, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+        .vote-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
         }
         .vote-header {
             display: flex;
@@ -118,83 +150,106 @@
             gap: 10px;
         }
         .vote-id {
-            font-weight: bold;
-            color: #333;
+            font-weight: 700;
+            color: #1a1a1a;
             font-size: 18px;
+            letter-spacing: -0.3px;
         }
         .decrypted-content {
-            background: #e7f3ff;
-            border: 2px solid #2196F3;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 10px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 12px;
         }
         .vote-detail {
-            margin-bottom: 10px;
-            padding: 10px;
-            background: white;
-            border-radius: 5px;
+            margin-bottom: 12px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         .vote-detail strong {
-            color: #333;
+            color: #374151;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
         }
         .candidate-name {
             color: #667eea;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 16px;
         }
         .results-summary {
-            background: #d4edda;
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 32px;
         }
         .results-summary h2 {
-            color: #155724;
-            margin-bottom: 15px;
+            color: #065f46;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: -0.5px;
         }
         .result-post {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         .result-post h3 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #1a1a1a;
+            margin-bottom: 14px;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.3px;
         }
         .candidate-result {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
-            margin-bottom: 5px;
-            background: #f8f9fa;
-            border-radius: 5px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(249, 250, 251, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        .candidate-result:hover {
+            background: rgba(249, 250, 251, 1);
         }
         .candidate-result.winner {
-            background: #d4edda;
-            border: 2px solid #28a745;
-            font-weight: bold;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.4);
+            font-weight: 700;
         }
         .vote-count {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
         .back-link {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 24px;
             color: #667eea;
             text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
         .back-link:hover {
-            text-decoration: underline;
+            color: #764ba2;
+            transform: translateX(-4px);
         }
         #decryptedSection {
             display: none;
@@ -203,27 +258,123 @@
             display: block;
         }
         .copy-btn {
-            background: #4CAF50;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
         }
         .copy-btn:hover {
-            background: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .key-generation-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 32px;
+        }
+        .key-generation-section h2 {
+            color: #1e40af;
+            margin-bottom: 18px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.4px;
+        }
+        .key-box {
+            background: rgba(249, 250, 251, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .key-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        .key-content {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            line-height: 1.6;
+        }
+        .key-section {
+            display: none;
+        }
+        .key-section.visible {
+            display: block;
+        }
+        .divider {
+            border-top: 2px solid #e5e7eb;
+            margin: 30px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>👁️ Observer Dashboard</h1>
-        <p class="subtitle">Decrypt and View Vote Results</p>
+        <p class="subtitle">Key Generation & Vote Decryption</p>
         
+        <!-- Key Generation Section -->
+        <div class="key-generation-section">
+            <h2>🔑 Step 1: Generate Observer Keys</h2>
+            <div class="warning" style="margin-bottom: 15px;">
+                <strong>⚠️ Important Instructions:</strong>
+                <p>1. All three election observers should be present together</p>
+                <p>2. Generate the keys offline (disconnect from internet)</p>
+                <p>3. Share the PUBLIC KEY with voters</p>
+                <p>4. Keep the PRIVATE KEY secure and secret until vote counting</p>
+                <p>5. All three observers should collectively safeguard the private key</p>
+            </div>
+            
+            <button class="button" onclick="generateKeys()">Generate New Key Pair</button>
+            
+            <div id="keySection" class="key-section">
+                <div class="key-box">
+                    <div class="key-label">
+                        <span>🔓 PUBLIC KEY (Share with voters)</span>
+                        <button class="copy-btn" onclick="copyToClipboard('publicKey')">Copy</button>
+                    </div>
+                    <div class="key-content" id="publicKey"></div>
+                </div>
+                
+                <div class="key-box">
+                    <div class="key-label">
+                        <span>🔐 PRIVATE KEY - 12 Word Mnemonic (Keep Secret!)</span>
+                        <button class="copy-btn" onclick="copyToClipboard('privateKey')">Copy</button>
+                    </div>
+                    <div class="key-content" id="privateKey" style="font-size: 14px; line-height: 1.8;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <!-- Decryption Section -->
+        <h2 style="color: #1e40af; margin-bottom: 15px;">🔓 Step 2: Decrypt Votes</h2>
         <div class="warning">
             <strong>⚠️ For Election Observers Only</strong>
-            <p>This page allows you to decrypt votes using the private key. All decryption happens locally in your browser - no data is sent to the server.</p>
+            <p>This section allows you to decrypt votes using the private key. All decryption happens locally in your browser - no data is sent to the server.</p>
         </div>
         
         <div class="form-group">
@@ -512,6 +663,69 @@
             link.click();
             
             URL.revokeObjectURL(url);
+        }
+        
+        // Key Generation Functions
+        let generatedMnemonic = '';
+        let publicKeyString = '';
+        
+        async function generateKeys() {
+            try {
+                // Generate 12-word BIP39 mnemonic (128 bits of entropy)
+                const entropy = new Uint8Array(16); // 128 bits
+                window.crypto.getRandomValues(entropy);
+                
+                // Convert to hex string for bip39
+                const entropyHex = Array.from(entropy)
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+                
+                // Generate mnemonic using BIP39
+                generatedMnemonic = bip39.entropyToMnemonic(entropyHex);
+                
+                // Derive key from mnemonic using PBKDF2
+                const encoder = new TextEncoder();
+                const mnemonicBytes = encoder.encode(generatedMnemonic);
+                
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    "raw",
+                    mnemonicBytes,
+                    "PBKDF2",
+                    false,
+                    ["deriveBits", "deriveKey"]
+                );
+                
+                // Derive AES-GCM key (256-bit)
+                const key = await window.crypto.subtle.deriveKey(
+                    {
+                        name: "PBKDF2",
+                        salt: encoder.encode("election-observer-key"),
+                        iterations: 100000,
+                        hash: "SHA-256"
+                    },
+                    keyMaterial,
+                    { name: "AES-GCM", length: 256 },
+                    true,
+                    ["encrypt", "decrypt"]
+                );
+                
+                // Export the key
+                const exportedKey = await window.crypto.subtle.exportKey("raw", key);
+                publicKeyString = arrayBufferToBase64(exportedKey);
+                
+                // Display keys
+                document.getElementById('publicKey').textContent = publicKeyString;
+                document.getElementById('privateKey').textContent = generatedMnemonic;
+                document.getElementById('keySection').classList.add('visible');
+                
+            } catch (error) {
+                alert('Error generating keys: ' + error.message);
+            }
+        }
+        
+        function arrayBufferToBase64(buffer) {
+            const binary = String.fromCharCode.apply(null, new Uint8Array(buffer));
+            return btoa(binary);
         }
         
         // Initialize
